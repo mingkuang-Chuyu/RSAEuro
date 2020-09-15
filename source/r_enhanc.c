@@ -103,7 +103,7 @@ int digesttype;                 /* message-digest algorithm */
 		return(RE_DIGEST_ALGORITHM);
 	}
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 int R_DigestUpdate(context, partIn, partInLen)
@@ -132,7 +132,7 @@ unsigned int partInLen;         /* length of next data part */
 		return(RE_DIGEST_ALGORITHM);
 	}
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 int R_DigestFinal(context, digest, digestLen)
@@ -163,7 +163,7 @@ unsigned int *digestLen;        /* length of message digest */
 		return(RE_DIGEST_ALGORITHM);
 	}
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Signing a file using SHS is not allowed for now */
@@ -336,7 +336,7 @@ unsigned int partInLen;         /* length of next data part */
 		*partOutLen = 0;
 		R_memcpy((POINTER)(context->buffer + context->bufferLen), (POINTER)partIn, partInLen);
         context->bufferLen += partInLen;    /* Bug Fix - 02/09/95, SK */
-		return(IDOK);
+		return(RE_IDOK);
 	}
 
 	/* Fill the buffer and encrypt. */
@@ -360,7 +360,7 @@ unsigned int partInLen;         /* length of next data part */
 	/* Length now less than 8, so copy remainder to buffer for next time. */
 	R_memcpy((POINTER)context->buffer, partIn, context->bufferLen = partInLen);
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Assume partOut buffer is at least 8 bytes. */
@@ -384,7 +384,7 @@ unsigned int *partOutLen;       /* length of last encrypted data part */
 	RestartCipher(context);
 	context->bufferLen = 0;
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Assume caller has already ASCII decoded the encryptedKey if necessary. */
@@ -449,7 +449,7 @@ unsigned int partInLen;         /* length of next encrypted data part */
 		*partOutLen = 0;
 		R_memcpy((POINTER)(context->buffer + context->bufferLen), partIn, partInLen);
 		context->bufferLen += partInLen;
-		return(IDOK);
+		return(RE_IDOK);
 	}
 
 	/* Fill the buffer and decrypt.  We know that there will be more left
@@ -476,7 +476,7 @@ unsigned int partInLen;         /* length of next encrypted data part */
 
 	R_memcpy((POINTER)context->buffer, partIn, context->bufferLen = partInLen);
 
-	return (IDOK);
+	return (RE_IDOK);
 }
 
 /* Assume partOut buffer is at least 7 bytes. */
@@ -555,7 +555,7 @@ R_RSA_PRIVATE_KEY *privateKey;         /* signer's RSA private key */
 
 	R_EncodePEMBlock(encodedSignature, encodedSignatureLen, signature, signatureLen);
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 int R_SignBlock(signature, signatureLen, block, blockLen, digestAlgorithm, privateKey)
@@ -838,7 +838,7 @@ unsigned int inputLen;            /* length */
 
 	R_memset(encryptedPart, 0, sizeof(encryptedPart));
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Assumes that digestAlgorithm is DA_MD2, DA_MD4 or DA_MD5 and
@@ -865,7 +865,7 @@ unsigned char *originaldigestInfo;
 unsigned char *digestInfo;
 {
 	return((originaldigestInfo[DIGEST_INFO_A_LEN] ==
-		digestInfo[DIGEST_INFO_A_LEN]) ? IDOK : RE_SIGNATURE);
+		digestInfo[DIGEST_INFO_A_LEN]) ? RE_IDOK : RE_SIGNATURE);
 }
 
 static int CipherInit(context, encryptionAlgorithm, key, iv, encrypt)
@@ -889,7 +889,7 @@ int encrypt;
 	default:
 		return (RE_ENCRYPTION_ALGORITHM);
 	}
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Assume len is a multiple of 8.

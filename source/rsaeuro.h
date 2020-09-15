@@ -122,8 +122,8 @@ extern "C" {
 
 /* Internal Error Codes */
 
-#define IDOK    0
-#define IDERROR 1
+#define RE_IDOK    0
+#define RE_IDERROR 1
 
 /* Internal defs. */
 

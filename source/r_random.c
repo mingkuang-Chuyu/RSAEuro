@@ -62,7 +62,7 @@ R_RANDOM_STRUCT *random;        /* new random structure */
 	random->outputAvailable = 0;
 	random->bytesNeeded = RANDOM_BYTES_RQ;
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 
@@ -98,7 +98,7 @@ unsigned int len;               /* length of block */
 	R_memset((POINTER)digest, 0, sizeof (digest));
 	j = 0;
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Get the number of seed byte still required by the object */
@@ -109,7 +109,7 @@ R_RANDOM_STRUCT *random;        /* random structure */
 {
 	*bytesNeeded = random->bytesNeeded;
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 int R_GenerateBytes(block, len, random)
@@ -146,7 +146,7 @@ R_RANDOM_STRUCT *random;                          /* random structure */
 	R_memcpy((POINTER)block, (POINTER)&random->output[16-avail], len);
 	random->outputAvailable = avail - len;
 
-	return(IDOK);
+	return(RE_IDOK);
 }
 
 /* Clear Random object when finished. */

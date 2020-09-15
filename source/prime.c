@@ -91,7 +91,7 @@ R_RANDOM_STRUCT *randomStruct; /* random structure */
         NN_Add(a, a, d, digits);
     }
 
-    return(IDOK);
+    return(RE_IDOK);
 }
 
 /* Returns nonzero iff a is a probable prime.
