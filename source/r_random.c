@@ -1,4 +1,4 @@
-/*
+﻿/*
 	R_RANDOM.C - random objects for RSAEURO
 
 	Copyright (c) J.S.A.Kapp 1994 - 1995.
@@ -41,6 +41,13 @@
 
 #ifdef MSDOS
 	#include <sys\types.h>
+#endif
+
+#ifdef _WIN32
+	#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+
+	#include <Windows.h>
+	#include <wincrypt.h>
 #endif
 
 #include "rsaeuro.h"
@@ -164,6 +171,45 @@ R_RANDOM_STRUCT *random;        /* random structure */
 void R_RandomCreate(random)
 R_RANDOM_STRUCT *random;                                /* random structure */
 {
+#ifdef _WIN32
+	// Windows 平台我们默认调用，Crypt，提供更好的安全性
+	random->outputAvailable = 0;
+
+
+	HCRYPTPROV hProv = (HCRYPTPROV)NULL;
+	if (CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, 0))
+	{
+		BOOL bRet = CryptGenRandom(hProv, sizeof(random->state), (BYTE*)random->state);
+
+		CryptReleaseContext(hProv, 0);
+
+		if (bRet)
+		{
+			random->bytesNeeded = 0;
+			return;
+		}
+	}
+
+	//Crypt失败了，GetSystemTime模拟一下吧。
+	random->bytesNeeded = RANDOM_BYTES_RQINT;  /* using internal value */
+
+	/*
+	Add data to random object
+	gmtime 可能会返回空指针，所以用 GetSystemTime
+	*/
+	while (random->bytesNeeded)
+	{
+		SYSTEMTIME SystemTime;
+		GetSystemTime(&SystemTime);
+
+		clock_t cnow = clock();
+
+		R_RandomUpdate(random, (POINTER)&SystemTime, sizeof(SystemTime));
+		R_RandomUpdate(random, &cnow, sizeof(clock_t));
+	}
+
+#else
+
 	unsigned int bytes;
 	clock_t cnow;
 	time_t t;
@@ -188,6 +234,7 @@ R_RANDOM_STRUCT *random;                                /* random structure */
 	R_memset((POINTER)gmt, 0, sizeof(struct tm));
 	cnow = 0;
 	t = 0;
+#endif
 }
 
 /* Mix up state of the current random structure.
